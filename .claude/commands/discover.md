@@ -103,4 +103,17 @@ When the discovery involves voice AI features, also surface:
 - Ask me clarifying questions if the inputs are ambiguous
 - Keep the synthesis under 500 words unless depth is requested
 
+## After Synthesis — Update Notion
+
+After producing the Discovery Summary, update the original idea in the Note Database:
+
+1. Search for the idea being explored in the Note Database (data source: `collection://4bb4836a-b9ce-4d01-8e08-8c1b6f2eceff`)
+2. Update its properties:
+   - Set `Status` to `🔍 Discovered`
+   - Set `Evidence` to the strength rating from the synthesis (Strong / Moderate / Weak)
+3. Append the Discovery Summary to the page content so the evidence is preserved alongside the original idea
+4. Confirm to me: "Updated [idea title] → Status: Discovered, Evidence: [rating]"
+
+If the idea doesn't exist in Notion yet (e.g., I described it verbally), create it first with `Type = "Idea"` and `Status = "🔍 Discovered"`.
+
 $ARGUMENTS

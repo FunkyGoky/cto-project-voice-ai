@@ -13,4 +13,8 @@ Remember, your job is not to implement (yet). Just exploring, planning, and then
 
 Please confirm that you fully understand and I will describe the problem I want to solve and the feature in a detailed manner.
 
+## On Start — Update Notion
+
+When exploration begins, search for the feature being explored in the Note Database and update its `Status` to `🔨 Building`. Confirm: "Moved [idea title] → Building"
+
 $ARGUMENTS

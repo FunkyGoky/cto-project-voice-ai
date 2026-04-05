@@ -73,4 +73,21 @@ When scoring Voice AI features, also factor:
 - Show the math so I can defend the decision upstream
 - Keep the final output under 400 words, with the table as the centrepiece
 
+## Input Source — Notion Opportunity Pipeline
+
+Before I provide a manual list, search the Note Database for all ideas with `Status = "🔍 Discovered"`:
+
+**Data source:** `collection://4bb4836a-b9ce-4d01-8e08-8c1b6f2eceff`
+
+Fetch each discovered idea and use their content as the input set for scoring. If I provide additional ideas manually, include those too.
+
+## After Scoring — Update Notion (Requires My Approval)
+
+After producing the ranked output:
+1. Update ALL scored ideas with their `RICE Score` value in Notion — this is informational and can be done automatically
+2. Do NOT change any idea's `Status` to `🎯 Prioritized` automatically
+3. Instead, present me the ranking and ask: "Which idea should I mark as Prioritized? Or would you like to adjust the scores first?"
+4. Only after I explicitly confirm which idea to prioritize, update that idea's `Status` to `🎯 Prioritized`
+5. Confirm: "Marked [idea title] as Prioritized (RICE: [score]). [N] other ideas scored and remain in Discovered."
+
 $ARGUMENTS
