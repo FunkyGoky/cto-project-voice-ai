@@ -6,7 +6,19 @@
       "Bash(mkdir -p \"$dir\")",
       "Bash(touch \"$dir/.gitkeep\")",
       "Bash(done)",
-      "Bash(git add:*)"
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(gh repo:*)",
+      "Bash(brew list:*)",
+      "Bash(brew install:*)",
+      "Bash(git config:*)",
+      "Read(//Users/gokikazama/**)",
+      "Bash(/opt/homebrew/bin/gh repo:*)",
+      "Bash(git remote:*)",
+      "Bash(git push:*)",
+      "Bash(git fetch:*)",
+      "Bash(git rebase:*)",
+      "Bash(git stash:*)"
     ]
   }
 }
