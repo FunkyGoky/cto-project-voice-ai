@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(for dir:*)",
+      "Bash(do)",
+      "Bash(mkdir -p \"$dir\")",
+      "Bash(touch \"$dir/.gitkeep\")",
+      "Bash(done)",
+      "Bash(git add:*)"
+    ]
+  }
+}
