@@ -15,8 +15,6 @@ This is a complete PM-to-Prototype workflow system for Claude Code, designed for
 
 ## Installation
 
-### Option A: Fresh project setup
-
 ```bash
 # 1. Create your project directory
 mkdir -p ~/Documents/Claude/voice-ai-pm-workspace
@@ -38,58 +36,6 @@ mkdir -p ideas prds conversation-designs prototypes outputs
 # 5. Start Claude Code
 claude
 ```
-
-### Option B: Add to existing CTO project
-
-```bash
-cd ~/Documents/Claude/cto-project
-
-# 1. Replace CLAUDE.md with the updated version
-cp CLAUDE.md .
-
-# 2. Add new commands (keeps existing ones)
-cp commands/discover.md .claude/commands/
-cp commands/prioritize.md .claude/commands/
-cp commands/design-conversation.md .claude/commands/
-cp commands/stakeholder-update.md .claude/commands/
-
-# 3. Add agents
-mkdir -p .claude/agents
-cp agents/* .claude/agents/
-
-# 4. Add skills
-mkdir -p .claude/skills
-cp -r skills/* .claude/skills/
-
-# 5. Add frameworks
-cp -r frameworks/ .
-
-# 6. Add guide and test case
-cp PM-WORKFLOW-GUIDE.md .
-cp TEST-USE-CASE.md .
-```
-
-## What's new vs. what changed
-
-### New files (not in the original CTO project)
-- `commands/discover.md` — Research synthesis phase
-- `commands/prioritize.md` — Feature scoring and ranking
-- `commands/design-conversation.md` — Voice AI dialog flow design
-- `commands/stakeholder-update.md` — Stakeholder communication generator
-- `agents/voice-ai-engineer.md` — Voice AI technical reviewer
-- `agents/executive.md` — Strategic communication reviewer
-- `agents/user-researcher.md` — User insight reviewer
-- `skills/voice-conversation-designer/` — Conversation design skill
-- `frameworks/` — PM thinking frameworks from the course
-- `PM-WORKFLOW-GUIDE.md` — Step-by-step operating manual
-- `TEST-USE-CASE.md` — End-to-end test case
-
-### Modified files
-- `CLAUDE.md` — Expanded with full PM lifecycle phases and workflow map
-
-### Unchanged files
-- All 8 original slash commands (create-issue, explore, create-plan, execute, review, peer-review, document, learning-opportunity)
-
 ## First run
 
 Open `PM-WORKFLOW-GUIDE.md` for the full operating manual, then run the test case in `TEST-USE-CASE.md` to validate everything works end-to-end.
