@@ -4,6 +4,20 @@ A step-by-step operating manual for going from "I have an idea" to "I have a wor
 
 ---
 
+## How the Workflow is Structured
+
+Strategy sits above everything else as the frame. It's not a step you run for every feature — it's a periodic activity that produces the context all other decisions flow from.
+
+```
+STRATEGY (periodic — the frame)
+    ↓ guides
+CAPTURE → DISCOVER → PRIORITIZE → SPECIFY → DESIGN → EXPLORE → PLAN → BUILD → REVIEW → VALIDATE → DOCUMENT
+    ↑                                                                                         |
+    └─────────────────────────── learnings feed back ─────────────────────────────────────────┘
+```
+
+---
+
 ## Prerequisites
 
 Before your first run, make sure your project is set up:
@@ -13,6 +27,7 @@ your-project/
 ├── CLAUDE.md                              ← Always-on context (PM + CTO persona)
 ├── .claude/
 │   ├── commands/
+│   │   ├── strategy.md                    ← /strategy (Phase 0)
 │   │   ├── discover.md                    ← /discover
 │   │   ├── prioritize.md                  ← /prioritize
 │   │   ├── design-conversation.md         ← /design-conversation
@@ -20,32 +35,31 @@ your-project/
 │   │   ├── create-plan.md                 ← /create-plan
 │   │   ├── execute.md                     ← /execute
 │   │   ├── review.md                      ← /review
+│   │   ├── validate.md                    ← /validate
 │   │   ├── peer-review.md                 ← /peer-review
 │   │   ├── document.md                    ← /document
 │   │   ├── stakeholder-update.md          ← /stakeholder-update
 │   │   ├── create-issue.md                ← /create-issue
 │   │   └── learning-opportunity.md        ← /learning-opportunity
 │   ├── agents/
-│   │   ├── voice-ai-engineer.md           ← Technical feasibility reviewer
-│   │   ├── executive.md                   ← Strategic communication reviewer
-│   │   └── user-researcher.md             ← User insight reviewer
+│   │   ├── voice-ai-engineer.md
+│   │   ├── executive.md
+│   │   └── user-researcher.md
 │   └── skills/
-│       ├── voice-ai-prd-generator/        ← PRD generation skill
-│       │   ├── SKILL.md
-│       │   └── references/
-│       │       ├── voice-ai-domain.md
-│       │       └── prd-template.md
-│       └── voice-conversation-designer/   ← Conversation design skill
+│       └── voice-conversation-designer/
 │           ├── SKILL.md
 │           └── references/
 │               └── voice-design-principles.md
-├── frameworks/                            ← PM thinking frameworks
+├── frameworks/
+│   ├── rumelt-strategy-kernel.md
+│   ├── gibson-biddle-dhm.md
+│   ├── swot-analysis.md
+│   ├── devils-advocate-strategy.md
 │   ├── socratic-questioning.md
 │   ├── impact-estimation-framework.md
-│   ├── rumelt-strategy-kernel.md
-│   ├── devils-advocate-strategy.md
 │   └── Carls-PRD-Template.md
-├── ideas/                                 ← Rough notes and inputs
+├── strategy/                              ← Strategy documents live here
+├── ideas/                                 ← Rough notes (also captured in Notion)
 ├── prds/                                  ← Generated PRDs
 ├── conversation-designs/                  ← Dialog flow specs
 ├── prototypes/                            ← Built prototypes
@@ -54,29 +68,39 @@ your-project/
 
 ---
 
-## The Full Journey: 10 Steps from Idea to Demo
+## Phase 0: Define Strategy (Periodic)
+
+**Command:** `/strategy`
+
+**What it does:** Guides you through developing a product strategy using Rumelt's Strategy Kernel (Diagnosis → Guiding Policy → Coherent Actions), evaluated with Gibson-Biddle DHM and pressure-tested with Devil's Advocate. Searches your Notion research for competitive intelligence and market context.
+
+**When to run it:** At quarterly/H-planning, when leadership asks for direction, when the competitive landscape shifts, or when your existing strategy feels stale. Not for every feature — features inherit the current strategy.
+
+**How to use it:**
+```
+/strategy
+
+Define our Voice AI strategy for H2 2026. Key question: should we go
+deep on English-first with best-in-class resolution quality, or go wide
+with multilingual support as a competitive wedge?
+```
+
+**Output:** A strategy document saved to `strategy/` with diagnosis, guiding policy, coherent actions, DHM assessment, critical assumptions, and explicit trade-offs.
+
+**Frameworks used:** `frameworks/rumelt-strategy-kernel.md`, `frameworks/gibson-biddle-dhm.md`, `frameworks/swot-analysis.md`, `frameworks/devils-advocate-strategy.md`
+
+---
+
+## The Feature Journey: Steps 1–11
+
+Once you have a strategic frame, individual features flow through these steps.
 
 ### Step 1: Capture the idea
 
-**What you do:** Write a rough note — even just 2-3 sentences — describing what you want to explore. Drop it in `ideas/`.
+Write a rough note — even 2-3 sentences — or capture it on the go via Claude mobile → Notion Note Database. Ideas land with `Type = "Idea"` and `Status = "💡 Raw"`.
 
-**What to include:**
-- What is the user problem?
-- Who has this problem?
-- Why does it matter now?
-
-**No command needed.** This is just you thinking on paper. The messier the better at this stage — you'll sharpen it in the next step.
-
-**Example:**
-```
-ideas/sentiment-routing.md
-
-Rough idea: What if the voice agent could detect when a caller is getting
-frustrated and automatically route them to a senior agent before they ask
-to escalate? Current behaviour: callers have to explicitly say "let me
-speak to a manager" which means we've already failed. Could sentiment
-detection in real-time audio reduce escalation complaints?
-```
+**Example on mobile:**
+> "Capture idea: what if the voice agent detected caller repetition and auto-surfaced help articles instead of asking them to explain again. Tag it voice and CX."
 
 ---
 
@@ -84,37 +108,18 @@ detection in real-time audio reduce escalation complaints?
 
 **Command:** `/discover`
 
-**What it does:** Automatically searches your Notion Note Database for relevant research (daily CS Briefs, AI Industry Briefs, Competitive Benchmarks, and Research notes published by Cowork), combines it with any manual inputs you provide, and synthesises everything into a structured problem statement with evidence assessment.
-
-**How it works under the hood:** The `/discover` command knows your Notion Note Database structure — it searches by topic tags (`AI`, `Voice`, `CX/Support`, `Product`, `Market/Competitive`) and note type (`Research`), fetches the most relevant 3-5 notes, and cross-references them with your idea.
+**What it does:** Searches your Notion Note Database for relevant research (CS Briefs, AI Industry Briefs, Competitive Benchmark, Research Landscape), combines it with any manual inputs, and synthesises everything into a structured problem statement. Updates the Notion idea to `Status = "🔍 Discovered"` with evidence strength.
 
 **How to use it:**
 ```
 /discover
 
-Here's what I'm exploring: [paste your idea note or describe it]
-
-@ideas/sentiment-routing.md
+Here's what I'm exploring: [describe the idea or reference a Notion idea]
 ```
 
-Claude will then:
-1. Search your Notion Note Database for research notes matching the topic
-2. Pull relevant CS Briefs and AI Industry Briefs for recent market signals
-3. Check the Voice AI Competitive Benchmark for competitor context
-4. Reference the AI for CX — Research Landscape for technology feasibility
-5. Ask you if you have any additional inputs (user interviews, tickets, etc.)
-6. Synthesise everything into a Discovery Summary
+Claude will search Notion, pull relevant research, ask if you have additional inputs, and produce a Discovery Summary.
 
-**Output:** A Discovery Summary with problem statement, evidence strength rating, sources used (with Notion note titles and dates), key insights, competitive context from your benchmark data, technology readiness assessment citing relevant research, open questions, and a pursue/investigate/deprioritise recommendation.
-
-**When to skip:** If the problem is already well-understood and validated (e.g., it came from leadership with clear data), jump to Step 3 or 4.
-
-**What to modify:** If the discovery output identifies research gaps, ask Cowork to produce additional briefings or research notes on the topic before proceeding. The strength of everything downstream depends on this step.
-
-**Key Notion references:**
-- Note Database: `164d85ab-6ff6-4ad8-aa58-fa4b80812ef4`
-- Data source: `collection://4bb4836a-b9ce-4d01-8e08-8c1b6f2eceff`
-- Filters: `Type = "Research"` + relevant `Topics` tags
+**When to skip:** If the problem is already well-understood and validated, jump to Step 3.
 
 ---
 
@@ -122,28 +127,9 @@ Claude will then:
 
 **Command:** `/prioritize`
 
-**What it does:** Scores and ranks opportunities so you build the highest-impact thing first.
+**What it does:** Pulls all `🔍 Discovered` ideas from Notion, scores them against the current strategic goals using RICE or impact estimation. Writes RICE scores to Notion automatically. Status change to `🎯 Prioritized` requires your explicit approval.
 
-**How to use it:**
-```
-/prioritize
-
-I have three potential Voice AI features to evaluate:
-1. Sentiment-based call routing (from my discovery)
-2. Multilingual greeting detection
-3. Post-call summary auto-generation
-
-Help me score these using RICE.
-```
-
-**Output:** A ranked table with scores, confidence levels, key risks, and an explicit recommendation including what you're saying no to.
-
-**Which framework to use:**
-- **RICE** — when you have multiple features competing for the same sprint
-- **Impact Estimation (3 scenarios)** — when you need to justify a single feature to leadership
-- **Strategic Fit** — when the decision is about direction, not individual features
-
-**Frameworks file:** `frameworks/impact-estimation-framework.md` has the detailed formula and worked examples.
+**Key behaviour:** If a strategy document exists in `strategy/`, the scoring uses it as context — opportunities aligned with the guiding policy score higher. If no strategy exists and the decision feels directional, Claude suggests running `/strategy` first.
 
 **When to skip:** If you only have one thing to build and it's already approved, jump to Step 4.
 
@@ -153,33 +139,15 @@ Help me score these using RICE.
 
 **Skill:** `voice-ai-prd-generator` (triggers automatically when you say "write a PRD for...")
 
-**What it does:** Runs a 4-phase workflow — gathers context from you, researches (web, competitors, internal docs, customer signals), generates the PRD using Voice AI-specific sections, then offers iteration.
+**What it does:** Runs a 4-phase workflow — gathers context from you, researches (web, competitors, internal docs, customer signals), generates the PRD using Voice AI-specific sections, then offers iteration and sub-agent review.
 
-**How to use it:**
+After the PRD is generated, run the sub-agents:
 ```
-Write a PRD for sentiment-based call routing in the Voice AI agent.
-The problem: callers get frustrated before they escalate, and we only
-react after explicit requests. I want proactive routing based on
-real-time sentiment detection.
+Run @.claude/agents/voice-ai-engineer.md, @.claude/agents/executive.md,
+and @.claude/agents/user-researcher.md on this PRD.
 ```
 
-**What happens:**
-1. Claude asks 2-3 clarifying questions (uses Socratic questioning from `frameworks/socratic-questioning.md`)
-2. Claude researches the space (competitor approaches, technical feasibility, benchmarks)
-3. Claude generates a full PRD using the Voice AI template
-4. Claude offers a red-team pass and sub-agent review
-
-**Sub-agent review (recommended):**
-After the PRD is generated, ask Claude to run the three sub-agents on it:
-```
-Run @agents/voice-ai-engineer.md, @agents/executive.md, and
-@agents/user-researcher.md on this PRD. I want technical feasibility,
-strategic framing, and user insight perspectives.
-```
-
-**Output:** A complete PRD saved to `prds/`, plus multi-perspective feedback.
-
-**What to modify:** Update `skills/voice-ai-prd-generator/references/voice-ai-domain.md` with internal Zendesk details as you learn them (real metrics, internal team names, actual architecture details).
+Save the PRD to `prds/`.
 
 ---
 
@@ -187,25 +155,11 @@ strategic framing, and user insight perspectives.
 
 **Command:** `/design-conversation`
 
-**Skill:** `voice-conversation-designer` (triggers automatically for dialog design requests)
+**What it does:** Produces a complete conversation design — agent persona, dialog flow map, sample scripts (happy path, repair, escalation), technical specs (latency budgets, VAD settings), and success metrics.
 
-**What it does:** Produces a complete conversation design document — agent persona, dialog flow map, sample scripts (happy path + repair + escalation), technical specs (latency budgets, VAD settings, barge-in rules), and success metrics.
+Save to `conversation-designs/`.
 
-**How to use it:**
-```
-/design-conversation
-
-Design the conversation flow for sentiment-based call routing.
-Scenario: The voice agent detects rising frustration in a caller's
-tone and proactively offers to connect them with a senior agent,
-before the caller explicitly asks to escalate.
-```
-
-**Output:** A conversation design document saved to `conversation-designs/` with implementable dialog scripts and technical specifications.
-
-**When to skip:** If the feature doesn't involve the voice agent's conversational behaviour (e.g., a backend analytics feature), skip this step.
-
-**Reference file:** `skills/voice-conversation-designer/references/voice-design-principles.md` contains the design rules Claude follows.
+**When to skip:** If the feature doesn't involve the voice agent's conversational behaviour.
 
 ---
 
@@ -213,22 +167,9 @@ before the caller explicitly asks to escalate.
 
 **Command:** `/explore`
 
-**What it does:** Claude analyses the problem space, existing codebase, available APIs/SDKs, and architecture constraints. It asks clarifying questions until all ambiguities are resolved. No code is written.
+**What it does:** Claude analyses the problem space, existing codebase, available APIs/SDKs, and architecture constraints. Asks clarifying questions until all ambiguities are resolved. No code is written. Updates Notion idea to `Status = "🔨 Building"`.
 
-**How to use it:**
-```
-/explore
-
-I want to build a prototype of the sentiment-based call routing feature.
-Here's the PRD: @prds/sentiment-routing-prd.md
-Here's the conversation design: @conversation-designs/sentiment-routing.md
-
-Explore how to build this as a working demo.
-```
-
-**What happens:** Claude reads the PRD and conversation design, maps out what APIs we'd use (OpenAI Realtime API for audio streaming, a sentiment detection model, WebSocket routing logic), identifies dependencies, and asks you clarifying questions until it's confident it understands what to build.
-
-**Critical rule:** This is an exploration, not implementation. If Claude starts writing code, redirect it. The separation between thinking and building is what prevents wasted effort.
+**Critical rule:** This is exploration, not implementation. The separation between thinking and building prevents wasted effort.
 
 ---
 
@@ -236,18 +177,7 @@ Explore how to build this as a working demo.
 
 **Command:** `/create-plan`
 
-**What it does:** Produces a markdown plan document with a TLDR, critical decisions, and modular steps with status tracking (🟩 Done / 🟨 In Progress / 🟥 To Do).
-
-**How to use it:**
-```
-/create-plan
-```
-
-(Run this immediately after `/explore` — Claude has all the context from the exploration.)
-
-**Output:** A plan document with overall progress percentage, phased steps, and clear scope boundaries.
-
-**What to modify:** Review the plan. If anything looks wrong or over-scoped, push back now. It's cheaper to cut scope in the plan than in the code.
+**Output:** A markdown plan with TLDR, critical decisions, and modular steps with status tracking (🟩/🟨/🟥).
 
 ---
 
@@ -255,22 +185,7 @@ Explore how to build this as a working demo.
 
 **Command:** `/execute`
 
-**What it does:** Implements the plan step by step, updating the tracking document as each step completes.
-
-**How to use it:**
-```
-/execute
-```
-
-(Run this after you've approved the plan from Step 7.)
-
-**Tips for the build:**
-- Use **plan mode** (Shift+Tab) for complex multi-file changes
-- Use **auto-accept mode** for straightforward implementations
-- If you hit a concept you don't understand, use `/learning-opportunity` to pause and learn
-- If you spot a bug or improvement idea mid-build, use `/create-issue` to capture it without losing flow
-
-**Output:** Working code, updated plan with progress tracking.
+Implements the plan step by step, updating the tracking document as each step completes. Use **plan mode** (Shift+Tab) for complex multi-file changes.
 
 ---
 
@@ -278,47 +193,31 @@ Explore how to build this as a working demo.
 
 **Commands:** `/review` then `/peer-review`
 
-**Self-review (`/review`):**
-```
-/review
-```
-Claude checks for: leaked secrets, async issues, error handling, audio pipeline consistency, latency problems, resource cleanup, code quality, production readiness, security, and architecture.
-
-**Peer review (`/peer-review`):**
-If you've run the code through another AI model (e.g., pasted it into ChatGPT or Gemini for a second opinion), feed their findings back:
-```
-/peer-review
-
-Findings from ChatGPT review:
-1. WebSocket connection isn't cleaned up on error
-2. No rate limiting on sentiment API calls
-3. Hardcoded API key on line 42
-```
-
-Claude will verify each finding against the actual code and produce a prioritised fix plan.
+Self-review checks for: leaked secrets, async issues, error handling, audio pipeline consistency, latency problems, resource cleanup, code quality, production readiness, security, and architecture. Peer-review evaluates findings from other AI models.
 
 ---
 
-### Step 10: Document and communicate
+### Step 10: Validate — test and learn
+
+**Command:** `/validate`
+
+**What it does:** Structures a validation plan (what hypothesis are we testing, what's success, who's the audience), prepares the demo or test, then captures feedback in a structured format. Produces a clear decision: ship, iterate, or kill.
+
+Based on the decision:
+- **Ship:** Updates Notion to `✅ Shipped`. Proceed to Step 11.
+- **Iterate:** Creates `/create-issue` entries. Loops back to Step 6 or 8.
+- **Kill:** Updates Notion to `❌ Killed`. Learning preserved on the Notion page.
+- **Need more data:** Loops back to Step 2 with new research questions.
+
+**This is the step most workflows miss.** The point of prototyping is to learn, and validation is where that learning gets captured and fed back into the system.
+
+---
+
+### Step 11: Document and communicate
 
 **Commands:** `/document` then `/stakeholder-update`
 
-**Update technical docs (`/document`):**
-```
-/document
-```
-Claude checks git diff, reads actual code, and updates CHANGELOG and relevant documentation.
-
-**Generate stakeholder communication (`/stakeholder-update`):**
-```
-/stakeholder-update
-
-I need a demo script for showing sentiment-based call routing to my
-manager and the engineering lead. The demo is a 5-minute slot in our
-weekly product review.
-```
-
-Claude asks about audience, channel, and purpose, then produces the right format.
+Update technical docs, then generate the right communication for the right audience (exec summary, demo script, EAP update, engineering handoff).
 
 ---
 
@@ -327,11 +226,12 @@ Claude asks about audience, channel, and purpose, then produces the right format
 | File | Purpose | When to modify |
 |------|---------|---------------|
 | `CLAUDE.md` | Always-on context: who you are, domain, workflow | When your role, stack, or domain context changes |
-| `commands/*.md` | Slash command prompts | Rarely — these are workflow templates |
+| `commands/strategy.md` | Product strategy development | Rarely — this is a workflow template |
+| `commands/*.md` | All other slash command prompts | Rarely — these are workflow templates |
 | `agents/*.md` | Sub-agent personas for multi-perspective review | When you want to add a new reviewer perspective |
-| `skills/voice-ai-prd-generator/` | PRD generation with research | Update `voice-ai-domain.md` with real internal data |
 | `skills/voice-conversation-designer/` | Dialog flow and call flow design | Update `voice-design-principles.md` with Zendesk-specific guidelines |
-| `frameworks/*.md` | PM thinking frameworks (Socratic, RICE, Rumelt, etc.) | Add your own frameworks as you collect them |
+| `frameworks/*.md` | PM thinking frameworks (Rumelt, DHM, RICE, etc.) | Add your own frameworks as you collect them |
+| `strategy/` | Strategy documents produced by `/strategy` | After each strategy cycle |
 | `ideas/` | Raw feature ideas and rough notes | Continuously — this is your inbox |
 | `prds/` | Generated PRDs | After each PRD generation |
 | `conversation-designs/` | Dialog flow specs | After each conversation design |
@@ -342,32 +242,37 @@ Claude asks about audience, channel, and purpose, then produces the right format
 
 ## Shortcut Paths
 
-Not every feature needs all 10 steps. Here are common shortcuts:
+Not every feature needs all 11 steps. Here are common shortcuts:
 
 **Quick prototype (known problem, just need a demo):**
 Step 1 → Step 6 → Step 7 → Step 8 → Step 10
 
-**Strategic exploration (validating direction, not building yet):**
-Step 1 → Step 2 → Step 3 → Stop (or proceed to Step 4 for a PRD)
+**Strategy-first (leadership asks for direction):**
+Phase 0 → Step 4 → Stop (strategy doc → PRD for the top initiative)
+
+**Discovery only (validating whether a problem is worth solving):**
+Step 1 → Step 2 → Step 3 → Stop
 
 **Voice conversation design only (no code needed):**
-Step 1 → Step 2 → Step 5 → Step 10
+Step 1 → Step 2 → Step 5 → Step 11
 
 **Bug fix or improvement to existing prototype:**
 `/create-issue` → Step 6 → Step 7 → Step 8 → Step 9
 
 ---
 
-## Tips for Getting the Most Out of This System
+## Tips
 
-1. **Context is everything.** The more you feed into `/discover` (real data, real quotes, real metrics), the sharper everything downstream becomes. Garbage in, garbage out.
+1. **Strategy first, always.** If you don't have a current strategy document, your first `/prioritize` run will feel ungrounded. Run `/strategy` once to set the frame, then features flow from it naturally.
 
-2. **Don't skip /explore.** The separation between thinking and building is what prevents you from coding yourself into a corner. Ten minutes exploring saves hours rebuilding.
+2. **Don't skip /explore.** The separation between thinking and building prevents you from coding yourself into a corner. Ten minutes exploring saves hours rebuilding.
 
-3. **Use sub-agents for review.** Getting the engineer, executive, and user-researcher perspectives on a PRD catches blind spots you won't see yourself. Run all three — they take seconds.
+3. **Don't skip /validate.** A prototype that nobody tests is a prototype that teaches nothing. Even a 5-minute demo with feedback capture is better than shipping into silence.
 
-4. **Keep CLAUDE.md updated.** As you learn more about Zendesk's internal architecture, add it. The more specific your domain context, the better Claude's technical recommendations.
+4. **Use sub-agents for review.** Getting the engineer, executive, and user-researcher perspectives on a PRD catches blind spots. Run all three — they take seconds.
 
-5. **Capture ideas in flight.** When you're mid-build and think of something, use `/create-issue` immediately. Don't break your flow to explore a new thread.
+5. **Keep CLAUDE.md updated.** As you learn more about Zendesk's internal architecture, add it. The more specific your domain context, the better Claude's recommendations.
 
-6. **Learn as you go.** When Claude uses a concept you don't fully understand, use `/learning-opportunity`. It explains at three levels of depth. This is how you build technical depth as a PM.
+6. **Capture ideas in flight.** When you're mid-build and think of something, use `/create-issue` immediately. Don't break your flow.
+
+7. **Learn as you go.** When Claude uses a concept you don't fully understand, use `/learning-opportunity`. It explains at three levels of depth.
