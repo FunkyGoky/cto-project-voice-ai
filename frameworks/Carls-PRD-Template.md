@@ -35,6 +35,40 @@ What alternatives did we consider?  Why did we land with this?
 2. *Explain why they are not goals*
 3. *These are as important and clarifying as the goals*
 
+## **Evaluation Plan**
+
+*This section is mandatory. You cannot ship what you cannot measure.*
+
+### Primary Metric
+- *What single metric will tell us this feature succeeded?*
+- *What is the current baseline value?*
+- *What is the target value? (be specific: "+8pp" not "improve")*
+
+### Guardrail Metrics
+- *What must NOT get worse when we ship this? (e.g., latency, error rate, CSAT for other flows)*
+- *What threshold would trigger a rollback?*
+
+### Experiment Design
+- *How will we test this? (A/B test, staged rollout, before/after comparison, design partner programme)*
+- *What percentage of traffic or users for the initial rollout?*
+- *What is the minimum sample size or duration needed for statistical significance?*
+
+### Instrumentation Required
+- *What events, logs, or data points need to be captured to measure the above?*
+- *Does this require new instrumentation or do existing analytics cover it?*
+
+### Evaluation Timeline
+- *When will we first check results? (e.g., 1 week post-launch)*
+- *When is the ship/kill decision? (e.g., 4 weeks post-launch)*
+- *Who makes the decision?*
+
+### Voice AI-Specific Metrics *(if applicable)*
+- *Containment rate target (% resolved without human)*
+- *Average handle time impact*
+- *Time to first response (latency)*
+- *Caller satisfaction / CSAT delta*
+- *Fallback/repair rate*
+
 # Solution Alignment
 
 ## Key Features

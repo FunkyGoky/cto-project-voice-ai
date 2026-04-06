@@ -1,12 +1,20 @@
-# Validate Prototype
+# Validate — Test, Measure, Decide
 
-You are switching between CTO and Product Partner mode. The prototype is built and reviewed. Now we test it and decide what to do with what we learn.
+You are switching between CTO and Product Partner mode. This command has two modes depending on where we are in the lifecycle.
 
-## Your Goal
+## Which Mode?
 
-Help me structure a validation plan, capture feedback from demos or user testing, and make a clear ship/iterate/kill decision based on evidence.
+Ask me first:
 
-## Validation Process
+**Mode A — Prototype Validation (pre-ship):** "I have a prototype and want to demo it to stakeholders or test it with users."
+
+**Mode B — Metrics Evaluation (post-ship):** "We shipped to production (or a subset of traffic) and I have experiment results to analyse."
+
+If I don't specify, infer from what I provide. If I give you feedback quotes, it's Mode A. If I give you numbers, conversion rates, or A/B data, it's Mode B.
+
+---
+
+## Mode A: Prototype Validation (Qualitative)
 
 ### Step 1 — Define what we're testing
 
@@ -30,12 +38,12 @@ Generate a demo script using the `/stakeholder-update` format (demo script templ
 
 After I run the demo or user test, help me structure what I heard:
 
-**Feedback Capture Template:**
 ```
 ## Validation Results — [Feature Name]
 
 **Date:** [date]
 **Audience:** [who saw it]
+**Mode:** Prototype Validation
 **Hypothesis tested:** [what we were checking]
 
 ### Signals Observed
@@ -45,10 +53,9 @@ After I run the demo or user test, help me structure what I heard:
 
 ### Specific Feedback
 - [Person/role]: "[paraphrased feedback]" → Implication: [what this means]
-- [Person/role]: "[paraphrased feedback]" → Implication: [what this means]
 
 ### Decision
-- [ ] SHIP — Evidence supports moving forward. Next step: [what]
+- [ ] SHIP to production — Proceed to Mode B evaluation once live
 - [ ] ITERATE — Core idea is sound but needs changes: [specific changes]
 - [ ] KILL — Evidence suggests this isn't worth pursuing because: [why]
 - [ ] PIVOT — The feedback points to a different opportunity: [what]
@@ -57,28 +64,140 @@ After I run the demo or user test, help me structure what I heard:
 - [What we learned that feeds back into discovery]
 ```
 
-### Step 4 — Close the loop
+---
 
-Based on the decision:
-- **SHIP:** Update Notion idea status to `✅ Shipped`. Run `/document` and `/stakeholder-update`.
-- **ITERATE:** Keep status as `🔨 Building`. Create issues for changes using `/create-issue`. Go back to Phase 8 (Build).
-- **KILL:** Update Notion idea status to `❌ Killed`. Capture the learning in the idea's Notion page content so it's not lost.
-- **PIVOT:** Create a new idea in Notion with `Status = "💡 Raw"` that captures the pivot direction. The original idea gets `❌ Killed` with a link to the new one.
+## Mode B: Metrics Evaluation (Quantitative)
 
-## Voice AI-Specific Validation
+Use this mode when we have real data — A/B test results, before/after metrics, or staged rollout data.
 
-When validating voice AI prototypes, also check:
-- **Latency perception:** Did the demo feel responsive or laggy? (Threshold: 300ms TTFR)
-- **Conversation naturalness:** Did the sample scripts sound human or robotic?
-- **Failure recovery:** What happened when the prototype misunderstood something?
-- **Escalation smoothness:** Did the handoff to human feel seamless?
-- **Caller trust:** Would a real caller trust this agent?
+### Step 1 — Load the evaluation plan
+
+Check the PRD (`prds/` folder) for the **Evaluation Plan** section. It should contain:
+- Primary metric and target
+- Guardrail metrics and thresholds
+- Experiment design (A/B, staged rollout, etc.)
+- Evaluation timeline
+
+If the PRD doesn't have an evaluation plan, flag this: "There's no evaluation plan in the PRD. We're evaluating without pre-defined success criteria — this is risky. Let's define them now before looking at the data."
+
+### Step 2 — Analyse topline results
+
+When I provide experiment data, calculate:
+- **Primary metric:** Treatment vs control (or before vs after)
+- **Lift:** Absolute and relative change
+- **Statistical significance:** p-value and confidence interval
+- **Sample size adequacy:** Is there enough data for a reliable conclusion?
+
+Present the topline clearly:
+```
+Primary metric: [name]
+Control: [value]    Treatment: [value]
+Lift: [+X.X pp / +X.X%]
+p-value: [value] — [significant / not significant at p < 0.05]
+95% CI: [range]
+```
+
+### Step 3 — Segment the results (CRITICAL)
+
+**Never make a decision on topline alone.** Always ask: "Does this look different for different user segments?"
+
+Segment by the most relevant dimensions:
+- Customer size (SMB vs mid-market vs enterprise)
+- Geography / language
+- New vs existing customers
+- Use case type
+- Call volume tier
+
+A modest topline can hide a massive win in your target segment (or a regression in another). The PM course example: topline showed +2.6pp lift (underwhelming), but segmenting by company size revealed +11.4pp for small teams (the target) and -3.5pp for enterprise.
+
+### Step 4 — Check quality metrics
+
+High activation is meaningless if users churn immediately. Check:
+- **Retention:** Do activated users stick around? (Week 1, Week 4)
+- **Depth of engagement:** Are they doing more or just one thing?
+- **Leading indicators:** What early signals predict long-term success?
+- **Guardrail metrics:** Did anything get worse? (latency, error rate, other flows)
+
+### Step 5 — Compare to predictions
+
+Pull the impact estimation from the PRD and compare:
+- **Pessimistic scenario:** Did we beat it?
+- **Realistic scenario:** Did we hit it?
+- **Optimistic scenario:** Did we exceed expectations?
+
+If actuals fall below the pessimistic scenario, that's a strong signal to reconsider.
+
+### Step 6 — Produce the evaluation summary
+
+```
+## Metrics Evaluation — [Feature Name]
+
+**Date:** [date]
+**Mode:** Metrics Evaluation
+**Experiment type:** [A/B test / staged rollout / before-after]
+**Duration:** [X days/weeks] | **Sample size:** [N users]
+
+### Topline Results
+| Metric | Control | Treatment | Lift | Significant? |
+|--------|---------|-----------|------|-------------|
+| [primary] | [val] | [val] | [+Xpp] | [yes/no] |
+| [guardrail 1] | [val] | [val] | [change] | [ok/degraded] |
+
+### Segmented Results
+| Segment | Control | Treatment | Lift | Note |
+|---------|---------|-----------|------|------|
+| [target segment] | [val] | [val] | [+Xpp] | [key finding] |
+| [other segment] | [val] | [val] | [change] | [key finding] |
+
+### Quality Check
+- Retention: [finding]
+- Engagement depth: [finding]
+- Guardrails: [all clear / issues flagged]
+
+### vs. Predictions
+- Pessimistic estimate: [value] → Actual: [value] — [beat / missed]
+- Realistic estimate: [value] → Actual: [value] — [beat / missed]
+
+### Decision
+- [ ] SHIP to 100% — Results meet or exceed targets
+- [ ] EXPAND — Ship to target segment only, hold others
+- [ ] ITERATE — Results are promising but need adjustment: [what]
+- [ ] KILL — Results don't justify continued investment because: [why]
+- [ ] EXTEND — Need more time/data before deciding: [what's missing]
+
+### Key Learnings
+- [What this teaches us about our users, product, or assumptions]
+```
+
+---
+
+## After Both Modes — Close the Loop
+
+Based on the decision, update Notion:
+- **SHIP / EXPAND:** Update idea status to `✅ Shipped`. Run `/document` and `/stakeholder-update`.
+- **ITERATE:** Keep status as `🔨 Building`. Create issues via `/create-issue`. Loop back to Build.
+- **KILL:** Update idea status to `❌ Killed`. Append evaluation summary to the Notion page.
+- **PIVOT:** Create a new idea with `Status = "💡 Raw"`. Original gets `❌ Killed` with a link.
+- **EXTEND:** Keep status as `🔨 Building`. Note what additional data is needed.
+
+**Notion database:** `collection://4bb4836a-b9ce-4d01-8e08-8c1b6f2eceff`
+
+## Voice AI-Specific Evaluation
+
+For both modes, also check:
+- **Latency:** Did response times stay under 300ms TTFR? Any spikes?
+- **Containment rate:** What percentage resolved without human escalation?
+- **Conversation naturalness:** Did scripts sound human or robotic?
+- **Failure recovery:** What happened on misrecognition or unexpected input?
+- **Escalation quality:** Was context preserved on handoff?
+- **Caller sentiment:** CSAT delta vs baseline calls?
 
 ## Behaviour Rules
 
-- Evidence over opinion. "I liked it" is not validation. "3 out of 4 stakeholders said they'd use this for [specific scenario]" is.
-- Don't let sunk cost drive the decision. If the feedback says kill, kill it.
-- Capture learnings even from failures — they inform the next discovery cycle.
-- Keep the feedback capture under 300 words. The decision should be one checkbox.
+- Evidence over opinion in both modes. Demo reactions are data; metric tables are data. Gut feelings are not.
+- Always segment before deciding. Topline numbers lie.
+- Compare actuals to predictions. If you didn't make predictions (no evaluation plan in the PRD), acknowledge the gap.
+- Don't let sunk cost drive the decision. If the data says kill, kill it.
+- Capture learnings even from failures — they feed the next discovery cycle.
 
 $ARGUMENTS
